@@ -1,0 +1,77 @@
+.matrix-view{color:#f3efe3;max-width:1100px;margin:0 auto;padding:32px 12px 72px;font-family:inherit}
+.matrix-view *{box-sizing:border-box}
+.matrix-view button{font:inherit;cursor:pointer}
+.matrix-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:66px}
+.matrix-back{padding:8px 0;border:0;background:none;color:#b4c2ae;font-size:13px;transition:color .2s}
+.matrix-back:hover{color:#fff}
+.matrix-eyebrow,.matrix-kicker{font-size:10px;font-weight:700;letter-spacing:.2em;color:#b8c7a8}
+.matrix-eyebrow{color:#748e7e}
+.matrix-intro{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:50px}
+.matrix-intro h1,.matrix-game-heading h1{font-size:clamp(40px,6vw,70px);line-height:1.15;letter-spacing:-.045em;margin:15px 0;color:#f6f3e8}
+.matrix-intro h1 span,.matrix-game-heading h1 span,.matrix-result h2 span{color:#d4af70}
+.matrix-intro p:not(.matrix-kicker){font-size:15px;line-height:1.8;color:#aabcb0;max-width:580px;margin:0}
+.matrix-intro-icon{display:flex;align-items:center;justify-content:center;width:126px;height:126px;background:#203f33;border:1px solid #36584a;border-radius:50%;font-size:60px;color:#e8dfc6;transform:rotate(-12deg)}
+.matrix-intro-icon i{font-style:normal;color:#df917f;font-size:33px;margin-left:-8px;margin-top:39px}
+.matrix-setup{border:1px solid #3b584a;background:#172f27;border-radius:20px;padding:32px}
+.matrix-section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:25px}
+.matrix-section-title span{color:#d1ac70;letter-spacing:.14em;font-size:10px;font-weight:700}
+.matrix-section-title h2{font-size:24px;margin:8px 0 0}
+.matrix-section-title p{color:#8fa899;font-size:12px;margin:0 0 4px}
+.matrix-levels{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+.matrix-level{display:flex;flex-direction:column;align-items:flex-start;min-height:140px;padding:15px;border:1px solid #3b584a;background:#203c31;color:#f4f0e3;border-radius:10px;text-align:left;transition:transform .2s,border-color .2s,background .2s}
+.matrix-level:hover{border-color:#b4a177;transform:translateY(-3px)}
+.matrix-level.is-selected{border-color:#e3c18a;background:#355744;box-shadow:inset 0 0 0 1px #e3c18a}
+.matrix-level-number{font-size:10px;color:#96ac99;margin-bottom:17px;letter-spacing:.12em}
+.matrix-level strong{font-size:16px}
+.matrix-level small{font-size:11px;color:#b5c8b8;margin:6px 0 12px;line-height:1.4}
+.matrix-level-grid{font-size:11px;color:#dfc394;margin-top:auto;letter-spacing:.06em}
+.matrix-brief,.matrix-stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:27px;border-top:1px solid #3b584a;border-bottom:1px solid #3b584a}
+.matrix-brief div,.matrix-stats div{padding:19px 16px 19px 0;display:flex;flex-direction:column;gap:7px}
+.matrix-brief span,.matrix-stats span{font-size:11px;color:#8fa89a}
+.matrix-brief strong,.matrix-stats strong{font-size:17px;color:#f7f0dc;font-weight:600;font-variant-numeric:tabular-nums}
+.matrix-hint{font-size:12px;color:#91a79a;line-height:1.7;margin:16px 0 23px}
+.matrix-start,.matrix-result-again{min-height:51px;border:0;border-radius:8px;padding:0 23px;background:#d4b27a;color:#152d24;font-weight:700;transition:background .2s,transform .2s}
+.matrix-start:hover,.matrix-result-again:hover{background:#e8ca95;transform:translateY(-2px)}
+.matrix-start span{margin-left:34px}
+.matrix-playing .matrix-top{margin-bottom:44px}
+.matrix-game-heading{display:flex;justify-content:space-between;align-items:end;gap:20px}
+.matrix-game-heading h1{font-size:clamp(32px,4vw,48px);margin:10px 0 0}
+.matrix-game-heading>p{color:#9cb3a5;font-size:12px}
+.matrix-stats{margin:28px 0 26px}
+.matrix-stats div{padding:15px 12px 15px 0}
+.matrix-stats .matrix-round-note{display:flex;flex-direction:row;align-items:center;justify-content:flex-end;font-size:11px;color:#90a99a;text-align:right}
+.matrix-stats .matrix-round-note span{font-size:20px;color:#d0b47f}
+.matrix-clock.is-low{color:#f0967e}
+.matrix-board-wrap{overflow-x:auto;padding:3px 0 10px}
+.matrix-board{display:grid;grid-template-columns:repeat(var(--matrix-cols),minmax(50px,1fr));gap:clamp(6px,1vw,12px);max-width:850px;margin:auto}
+.matrix-card{border:0;background:transparent;padding:0;aspect-ratio: 0.75;perspective:700px;min-width:50px;border-radius:7px}
+.matrix-card:focus-visible,.matrix-view button:focus-visible{outline:3px solid #efd49c;outline-offset:3px}
+.matrix-card-inner{display:block;position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .38s cubic-bezier(.2,.65,.2,1)}
+.matrix-card.is-up .matrix-card-inner{transform:rotateY(180deg)}
+.matrix-card-back,.matrix-card-face{position:absolute;inset:0;display:flex;backface-visibility:hidden;border-radius:7px;overflow:hidden}
+.matrix-card-back{align-items:center;justify-content:center;background:#325747;border:1px solid #648270;color:#b8caaf;box-shadow:inset 0 0 0 4px #325747,inset 0 0 0 5px #7a967e}
+.matrix-card-back i{font-style:normal;font-size:clamp(16px,2.5vw,27px);opacity:.85;transition:transform .2s}
+.matrix-card:not(.is-up):hover .matrix-card-back i{transform:scale(1.2)}
+.matrix-card-face{transform:rotateY(180deg);background:#f5f0de;color:#1f4134;border:1px solid #eee6cf;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;box-shadow:0 4px 16px #07140f44}
+.matrix-card-face.is-red{color:#b95c51}
+.matrix-card-face b{font-family:Georgia,serif;font-size:clamp(15px,3vw,29px);line-height:1;font-weight:700}
+.matrix-card-face em{font-style:normal;font-size:clamp(17px,3vw,32px);line-height:1.1}
+.matrix-card.is-matched .matrix-card-face{background:#dce8d4;opacity:.82}
+.matrix-status{text-align:center;color:#a5b9a9;min-height:24px;font-size:12px;margin:17px 0}
+.matrix-result-overlay{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:#071710d9;backdrop-filter:blur(8px)}
+.matrix-result{width:min(100%,480px);border:1px solid #577462;border-radius:20px;background:#203b30;padding:35px;text-align:center;box-shadow:0 20px 80px #0008}
+.matrix-result-symbol{display:block;color:#dfbd83;font-size:38px;margin-bottom:12px}
+.matrix-result h2{font-size:32px;margin:12px 0}
+.matrix-result>p:not(.matrix-kicker){font-size:13px;line-height:1.8;color:#a9bdb0}
+.matrix-result-stats{display:grid;grid-template-columns:repeat(3,1fr);padding:20px 0;margin:22px 0;border-top:1px solid #476152;border-bottom:1px solid #476152}
+.matrix-result-stats div{display:flex;flex-direction:column;gap:8px}
+.matrix-result-stats span{font-size:11px;color:#a0b5a5}
+.matrix-result-stats strong{font-size:16px;color:#f4eddd}
+.matrix-result-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.matrix-result-setup{min-height:51px;padding:0 23px;border:1px solid #688472;border-radius:8px;background:transparent;color:#e5ede0}
+.matrix-result-setup:hover{background:#315244}
+@media(max-width:800px){.matrix-levels{grid-template-columns:repeat(3,minmax(0,1fr))}.matrix-level{min-height:125px}.matrix-top{margin-bottom:42px}}
+@media(max-width:520px){.matrix-view{padding:20px 4px 50px}.matrix-top{margin-bottom:38px}.matrix-eyebrow{font-size:9px}.matrix-intro{margin-bottom:28px}.matrix-intro-icon{width:72px;height:72px;font-size:37px;flex-shrink:0}.matrix-intro-icon i{font-size:21px;margin-top:25px}.matrix-intro p:not(.matrix-kicker){font-size:13px}.matrix-setup{padding:22px 15px}.matrix-section-title{align-items:start}.matrix-section-title h2{font-size:21px}.matrix-section-title p{display:none}.matrix-levels{grid-template-columns:repeat(2,minmax(0,1fr))}.matrix-level{min-height:116px;padding:13px}.matrix-level-number{margin-bottom:10px}.matrix-brief strong,.matrix-stats strong{font-size:14px}.matrix-brief div,.matrix-stats div{padding-right:5px}.matrix-game-heading>p{display:none}.matrix-stats .matrix-round-note{font-size:0}.matrix-stats .matrix-round-note span{font-size:19px}.matrix-board{gap:6px}.matrix-result{padding:27px 20px}}
+@media(prefers-reduced-motion:reduce){.matrix-view *, .matrix-result-overlay *{transition:none!important;animation:none!important}}
+.matrix-scroll-hint{display:none;color:#b5c8b8;font-size:12px;margin:18px 0 8px}
+@media(max-width:720px){.matrix-scroll-hint{display:block}}

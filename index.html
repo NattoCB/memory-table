@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173a32">
+  <meta name="description" content="两个安静而有挑战的扑克记忆小游戏。">
+  <title>记忆牌桌 · Memory Table</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="nback.css">
+  <link rel="stylesheet" href="matrix.css">
+  <script src="nback.js" defer></script>
+  <script src="matrix.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <button class="brand" type="button" data-home aria-label="返回主菜单"><span class="brand-mark">✳</span><span>MEMORY<br><b>TABLE</b></span></button>
+      <div class="topbar-right"><span class="topbar-dot"></span> YOUR QUIET PRACTICE <span class="topbar-index">EST. FOR YOU</span></div>
+    </header>
+    <main id="app">
+      <section id="home" class="home-view">
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="eyebrow-line"></span> A LITTLE PRACTICE, EVERY DAY</div>
+            <h1>给记忆一点<br><em>练习的时间。</em></h1>
+            <p>在一张安静的牌桌上，专注当下。<br>从适合自己的难度开始，慢慢找到节奏。</p>
+            <div class="hero-note"><span>✳</span> 两个小游戏 · 一次只需几分钟</div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
+            <span class="art-spark spark-one">✳</span><span class="art-spark spark-two">✦</span>
+            <div class="art-card art-card-back"><span>✦</span></div>
+            <div class="art-card art-card-front"><span class="card-corner">A<br>♥</span><span class="card-heart">♥</span><span class="card-corner corner-bottom">A<br>♥</span></div>
+            <div class="art-label">TAKE YOUR TIME <span>↗</span></div>
+          </div>
+        </div>
+        <div class="section-heading"><div><span class="section-kicker">CHOOSE YOUR PRACTICE</span><h2>今天，玩哪一个？</h2></div><p>选一张牌，开始你的练习 <span>↘</span></p></div>
+        <div class="game-grid">
+          <button class="game-tile tile-nback" type="button" data-game="nback">
+            <span class="tile-number">01 / WORKING MEMORY</span><span class="tile-icon icon-stack" aria-hidden="true"><span>♠</span><span>♥</span></span>
+            <span class="tile-title">N-back Poker <span>↗</span></span><span class="tile-description">记住流动的牌，回想 N 张之前的花色与点数。</span><span class="tile-footer"><span>N = 1–30</span><span>工作记忆</span></span>
+          </button>
+          <button class="game-tile tile-matrix" type="button" data-game="matrix">
+            <span class="tile-number">02 / VISUAL MEMORY</span><span class="tile-icon icon-grid" aria-hidden="true"><i>♣</i><i>♦</i><i>♥</i><i>♠</i></span>
+            <span class="tile-title">矩阵翻牌 <span>↗</span></span><span class="tile-description">翻开牌面、寻找配对，在有限时间内清空牌阵。</span><span class="tile-footer"><span>多档难度</span><span>视觉记忆</span></span>
+          </button>
+        </div>
+        <div class="gentle-note"><span>✧</span><p><b>不必急着追求高分。</b> 规律练习，休息一下，再继续。游戏成绩只代表游戏中的表现。</p></div>
+      </section>
+      <section id="game-view" class="game-view" hidden aria-live="polite"></section>
+    </main>
+    <footer class="site-footer"><span>MEMORY TABLE <b>✳</b></span><span>MADE FOR A MOMENT OF FOCUS</span><span>慢一点，也很好。</span></footer>
+  </div>
+</body>
+</html>
