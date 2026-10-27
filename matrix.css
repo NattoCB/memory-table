@@ -75,3 +75,10 @@
 @media(prefers-reduced-motion:reduce){.matrix-view *, .matrix-result-overlay *{transition:none!important;animation:none!important}}
 .matrix-scroll-hint{display:none;color:#b5c8b8;font-size:12px;margin:18px 0 8px}
 @media(max-width:720px){.matrix-scroll-hint{display:block}}
+.matrix-preview-banner{position:sticky;top:8px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:15px;margin:0 0 18px;padding:14px 18px;border:1px solid #ba9c64;border-radius:10px;background:#294637;box-shadow:0 8px 25px #07171055}
+.matrix-preview-banner div{display:flex;flex-direction:column;gap:5px}.matrix-preview-banner strong{font-size:14px;color:#f7f0dc}.matrix-preview-banner span{font-size:12px;line-height:1.5;color:#bfd0bc}.matrix-preview-banner b{color:#f3cf89;font-variant-numeric:tabular-nums}.matrix-preview-skip{border:1px solid #d4b27a;border-radius:7px;background:#d4b27a;color:#152d24;padding:10px 14px;white-space:nowrap;font-size:12px!important;font-weight:700!important}.matrix-preview-skip:hover{background:#e8ca95}
+@media(max-width:520px){.matrix-preview-banner{align-items:flex-start;flex-direction:column;padding:11px 13px;gap:8px}.matrix-preview-skip{padding:8px 12px}}
+.matrix-previewing .matrix-board{width:min(100%,var(--preview-board-width));grid-template-columns:repeat(var(--matrix-cols),minmax(0,1fr));gap:clamp(3px,.6vw,6px)}
+.matrix-previewing .matrix-card{min-width:0}
+.matrix-previewing .matrix-card-face b{font-size:clamp(12px,2vw,22px)}
+.matrix-previewing .matrix-card-face em{font-size:clamp(13px,2vw,24px)}

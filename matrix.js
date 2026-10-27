@@ -2,12 +2,12 @@
   'use strict';
 
   const LEVELS = [
-    { name: '初见', note: '从容热身', rows: 4, cols: 4, mistakes: 12, seconds: 150, suits: 1 },
-    { name: '专注', note: '找到节奏', rows: 4, cols: 5, mistakes: 11, seconds: 165, suits: 1 },
-    { name: '进阶', note: '保持耐心', rows: 4, cols: 6, mistakes: 10, seconds: 180, suits: 1 },
-    { name: '挑战', note: '两种花色', rows: 6, cols: 6, mistakes: 9, seconds: 195, suits: 2 },
-    { name: '专家', note: '记住更多位置', rows: 6, cols: 8, mistakes: 8, seconds: 210, suits: 2 },
-    { name: '极限', note: '四种花色 · 高压', rows: 8, cols: 8, mistakes: 7, seconds: 225, suits: 4 }
+    { name: '初见', note: '从容热身', rows: 4, cols: 4, mistakes: 12, seconds: 150, previewSeconds: 10, suits: 1 },
+    { name: '专注', note: '找到节奏', rows: 4, cols: 5, mistakes: 11, seconds: 165, previewSeconds: 12, suits: 1 },
+    { name: '进阶', note: '保持耐心', rows: 4, cols: 6, mistakes: 10, seconds: 180, previewSeconds: 14, suits: 1 },
+    { name: '挑战', note: '两种花色', rows: 6, cols: 6, mistakes: 9, seconds: 195, previewSeconds: 18, suits: 2 },
+    { name: '专家', note: '记住更多位置', rows: 6, cols: 8, mistakes: 8, seconds: 210, previewSeconds: 22, suits: 2 },
+    { name: '极限', note: '四种花色 · 高压', rows: 8, cols: 8, mistakes: 7, seconds: 225, previewSeconds: 30, suits: 4 }
   ];
   const SUITS = [
     { symbol: '♠', name: '黑桃', red: false },
@@ -39,11 +39,21 @@
   }
 
   function createState(deck, allowance) {
-    return { deck, allowance, matched: new Set(), first: null, mistakes: 0, ended: false };
+    return { deck, allowance, matched: new Set(), first: null, mistakes: 0, ended: false, phase: 'playing', previewDeadline: 0 };
+  }
+
+  function startPreview(game, seconds, now) {
+    game.phase = 'preview';
+    game.previewDeadline = now + seconds * 1000;
+  }
+
+  function finishPreview(game) {
+    game.phase = 'playing';
+    game.previewDeadline = 0;
   }
 
   function flip(game, index) {
-    if (game.ended || !Number.isInteger(index) || index < 0 || index >= game.deck.length || game.matched.has(index) || game.first === index) return { type: 'ignored' };
+    if (game.phase !== 'playing' || game.ended || !Number.isInteger(index) || index < 0 || index >= game.deck.length || game.matched.has(index) || game.first === index) return { type: 'ignored' };
     if (game.first === null) {
       game.first = index;
       return { type: 'first' };
@@ -69,6 +79,7 @@
 
   function mount(container, options = {}) {
     let timer = null;
+    let previewTimer = null;
     let pending = null;
     let disposed = false;
     let levelIndex = 0;
@@ -79,8 +90,10 @@
 
     function stop() {
       if (timer !== null) clearInterval(timer);
+      if (previewTimer !== null) clearInterval(previewTimer);
       if (pending !== null) clearTimeout(pending);
       timer = null;
+      previewTimer = null;
       pending = null;
     }
     function cleanup() { disposed = true; stop(); container.innerHTML = ''; }
@@ -89,7 +102,7 @@
     function drawSetup() {
       stop();
       const chosen = LEVELS[levelIndex];
-      container.innerHTML = `<section class="matrix-view"><div class="matrix-top"><button type="button" class="matrix-back">← 返回主菜单</button><span class="matrix-eyebrow">MEMORY MATCH / 02</span></div><div class="matrix-intro"><div><p class="matrix-kicker">PATTERN & POSITION</p><h1>矩阵翻牌<span>。</span></h1><p>翻开两张牌，找到相同的花色和点数。记住位置，直到所有牌配对。</p></div><div class="matrix-intro-icon" aria-hidden="true">♠<i>♥</i></div></div><div class="matrix-setup"><div class="matrix-section-title"><div><span>01 / 选择难度</span><h2>找到你的节奏</h2></div><p>先从轻松的一档开始。</p></div><div class="matrix-levels" role="radiogroup" aria-label="选择难度">${LEVELS.map((level, index) => `<button type="button" role="radio" aria-checked="${index === levelIndex}" class="matrix-level ${index === levelIndex ? 'is-selected' : ''}" data-level="${index}"><span class="matrix-level-number">0${index + 1}</span><strong>${level.name}</strong><small>${level.note}</small><span class="matrix-level-grid">${level.rows} × ${level.cols}</span></button>`).join('')}</div><div class="matrix-brief"><div><span>牌阵</span><strong>${chosen.rows} × ${chosen.cols}</strong></div><div><span>花色</span><strong>${chosen.suits} 种</strong></div><div><span>容错</span><strong>${chosen.mistakes} 次</strong></div><div><span>限时</span><strong>${clock(chosen.seconds)}</strong></div></div><p class="matrix-hint">每翻错一组消耗 1 次容错；第一次翻牌后开始计时。</p><button type="button" class="matrix-start">开始这一局 <span>↗</span></button></div></section>`;
+      container.innerHTML = `<section class="matrix-view"><div class="matrix-top"><button type="button" class="matrix-back">← 返回主菜单</button><span class="matrix-eyebrow">MEMORY MATCH / 02</span></div><div class="matrix-intro"><div><p class="matrix-kicker">PATTERN & POSITION</p><h1>矩阵翻牌<span>。</span></h1><p>翻开两张牌，找到相同的花色和点数。记住位置，直到所有牌配对。</p></div><div class="matrix-intro-icon" aria-hidden="true">♠<i>♥</i></div></div><div class="matrix-setup"><div class="matrix-section-title"><div><span>01 / 选择难度</span><h2>找到你的节奏</h2></div><p>先从轻松的一档开始。</p></div><div class="matrix-levels" role="radiogroup" aria-label="选择难度">${LEVELS.map((level, index) => `<button type="button" role="radio" aria-checked="${index === levelIndex}" class="matrix-level ${index === levelIndex ? 'is-selected' : ''}" data-level="${index}"><span class="matrix-level-number">0${index + 1}</span><strong>${level.name}</strong><small>${level.note}</small><span class="matrix-level-grid">${level.rows} × ${level.cols}</span></button>`).join('')}</div><div class="matrix-brief"><div><span>牌阵</span><strong>${chosen.rows} × ${chosen.cols}</strong></div><div><span>花色</span><strong>${chosen.suits} 种</strong></div><div><span>容错</span><strong>${chosen.mistakes} 次</strong></div><div><span>限时</span><strong>${clock(chosen.seconds)}</strong></div></div><p class="matrix-hint">开局先明牌浏览 ${chosen.previewSeconds} 秒，不占用配对时间；每翻错一组消耗 1 次容错。配对倒计时从第一次翻牌开始。</p><button type="button" class="matrix-start">开始这一局 <span>↗</span></button></div></section>`;
       container.querySelector('.matrix-back').addEventListener('click', exit);
       container.querySelectorAll('[data-level]').forEach(button => button.addEventListener('click', () => { levelIndex = Number(button.dataset.level); drawSetup(); }));
       container.querySelector('.matrix-start').addEventListener('click', start);
@@ -100,10 +113,32 @@
       state = createState(createDeck(level), level.mistakes);
       remaining = level.seconds;
       deadline = 0;
-      boardLocked = false;
-      container.innerHTML = `<section class="matrix-view matrix-playing"><div class="matrix-top"><button type="button" class="matrix-back">← 退出这一局</button><span class="matrix-eyebrow">MEMORY MATCH / ${level.name}</span></div><div class="matrix-game-heading"><div><p class="matrix-kicker">KEEP THE PATTERN IN MIND</p><h1>找出每一对<span>。</span></h1></div><p>相同花色与点数才算配对</p></div><div class="matrix-stats"><div><span>已配对</span><strong class="matrix-pairs">0 / ${state.deck.length / 2}</strong></div><div><span>剩余容错</span><strong class="matrix-lives">${level.mistakes} 次</strong></div><div><span>剩余时间</span><strong class="matrix-clock">${clock(remaining)}</strong></div><div class="matrix-round-note">首次翻牌开始计时 <span>✳</span></div></div><p class="matrix-scroll-hint">牌阵较宽时，可左右滑动查看。</p><div class="matrix-board-wrap"><div class="matrix-board" style="--matrix-cols:${level.cols}">${state.deck.map((card, index) => `<button type="button" class="matrix-card" data-index="${index}" aria-label="第 ${index + 1} 张，未翻开"><span class="matrix-card-inner"><span class="matrix-card-back" aria-hidden="true"><i>✦</i></span><span class="matrix-card-face ${card.red ? 'is-red' : ''}" aria-hidden="true"><b>${card.rank}</b><em>${card.symbol}</em></span></span></button>`).join('')}</div></div><p class="matrix-status" aria-live="polite">准备好时，翻开第一张牌。</p></section>`;
+      boardLocked = true;
+      startPreview(state, level.previewSeconds, Date.now());
+      container.innerHTML = `<section class="matrix-view matrix-playing matrix-previewing" style="--preview-board-width:calc(${75 * level.cols / level.rows}vh - ${165 * level.cols / level.rows}px)"><div class="matrix-top"><button type="button" class="matrix-back">← 退出这一局</button><span class="matrix-eyebrow">MEMORY MATCH / ${level.name}</span></div><div class="matrix-game-heading"><div><p class="matrix-kicker">KEEP THE PATTERN IN MIND</p><h1>找出每一对<span>。</span></h1></div><p>相同花色与点数才算配对</p></div><div class="matrix-stats"><div><span>已配对</span><strong class="matrix-pairs">0 / ${state.deck.length / 2}</strong></div><div><span>剩余容错</span><strong class="matrix-lives">${level.mistakes} 次</strong></div><div><span>剩余时间</span><strong class="matrix-clock">${clock(remaining)}</strong></div><div class="matrix-round-note">首次翻牌开始计时 <span>✳</span></div></div><div class="matrix-preview-banner"><div><strong>记住所有牌的位置</strong><span>明牌浏览 <b class="matrix-preview-clock">${level.previewSeconds}</b> 秒后自动盖牌，配对计时尚未开始</span></div><button type="button" class="matrix-preview-skip">记好了，开始配对 ↗</button></div><p class="matrix-scroll-hint">牌阵较宽时，可左右滑动查看。</p><div class="matrix-board-wrap"><div class="matrix-board" style="--matrix-cols:${level.cols}">${state.deck.map((card, index) => `<button type="button" class="matrix-card" data-index="${index}" aria-label="第 ${index + 1} 张，未翻开"><span class="matrix-card-inner"><span class="matrix-card-back" aria-hidden="true"><i>✦</i></span><span class="matrix-card-face ${card.red ? 'is-red' : ''}" aria-hidden="true"><b>${card.rank}</b><em>${card.symbol}</em></span></span></button>`).join('')}</div></div><p class="matrix-status" aria-live="polite">观察牌面，记住每一对的位置。</p></section>`;
       container.querySelector('.matrix-back').addEventListener('click', exit);
-      container.querySelectorAll('.matrix-card').forEach(button => button.addEventListener('click', () => choose(Number(button.dataset.index))));
+      container.querySelectorAll('.matrix-card').forEach((button, index) => {
+        reveal(index);
+        button.addEventListener('click', () => choose(Number(button.dataset.index)));
+      });
+      container.querySelector('.matrix-preview-skip').addEventListener('click', endPreview);
+      previewTimer = setInterval(() => {
+        const seconds = timeRemaining(state.previewDeadline, Date.now());
+        container.querySelector('.matrix-preview-clock').textContent = seconds;
+        if (seconds === 0) endPreview();
+      }, 200);
+      container.querySelector('.matrix-stats').scrollIntoView({ block: 'start', behavior: 'instant' });
+    }
+    function endPreview() {
+      if (disposed || state.phase !== 'preview') return;
+      clearInterval(previewTimer);
+      previewTimer = null;
+      finishPreview(state);
+      container.querySelectorAll('.matrix-card').forEach((button, index) => hide(index));
+      container.querySelector('.matrix-preview-banner').remove();
+      container.querySelector('.matrix-playing').classList.remove('matrix-previewing');
+      container.querySelector('.matrix-status').textContent = '准备好时，翻开第一张牌。';
+      boardLocked = false;
     }
     function updateStats() {
       container.querySelector('.matrix-pairs').textContent = `${state.matched.size / 2} / ${state.deck.length / 2}`;
@@ -189,7 +224,7 @@
     drawSetup();
     return cleanup;
   }
-  const api = { LEVELS, createDeck, createState, flip, timeRemaining, mount };
+  const api = { LEVELS, createDeck, createState, startPreview, finishPreview, flip, timeRemaining, mount };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root) root.MemoryMatrix = api;
 })(typeof window !== 'undefined' ? window : null);

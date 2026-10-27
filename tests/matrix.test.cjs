@@ -56,3 +56,20 @@ test('deadline is enforced using elapsed wall-clock time before a flip', () => {
   assert.equal(matrix.timeRemaining(10000, 10000), 0);
   assert.equal(matrix.timeRemaining(10000, 10500), 0);
 });
+
+test('preview shows a fixed observation period and does not allow a flip until it ends', () => {
+  const game = matrix.createState([{ id: 'a' }, { id: 'a' }], 2);
+  matrix.startPreview(game, 8, 1000);
+  assert.equal(game.phase, 'preview');
+  assert.equal(game.previewDeadline, 9000);
+  assert.equal(matrix.flip(game, 0).type, 'ignored');
+  assert.equal(game.first, null);
+  assert.equal(game.mistakes, 0);
+  matrix.finishPreview(game);
+  assert.equal(game.phase, 'playing');
+  assert.equal(matrix.flip(game, 0).type, 'first');
+});
+
+test('each difficulty gives a positive preview time', () => {
+  for (const level of matrix.LEVELS) assert.ok(level.previewSeconds > 0);
+});
